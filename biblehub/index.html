@@ -5,7 +5,7 @@
   <title>Trợ lý tra cứu BibleHub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    /* Nền chung giống kiểu app: xám nhạt */
+    /* Nền chung kiểu app: xám nhạt */
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f3f4f6;
@@ -224,7 +224,7 @@
         <div class="step-title">Chọn câu Kinh Thánh để xem trên BibleHub</div>
       </div>
       <p class="step-description">
-        Chọn sách, chương, câu và cách xem (Interlinear để thấy mã Strong). Câu sẽ hiển thị trong khung phía dưới.
+        Chọn sách, chương, câu và cách xem (Interlinear để thấy mã Strong). Câu sẽ hiển thị trong khung phía dưới khi bạn bấm nút.
       </p>
 
       <div class="field">
@@ -346,7 +346,8 @@
         </div>
       </div>
 
-      <div class="frame-wrapper">
+      <!-- Iframe chỉ hiển thị sau khi bấm nút -->
+      <div class="frame-wrapper" id="biblehubFrameWrapper" style="display:none;">
         <iframe id="frameBiblehub" title="BibleHub viewer"></iframe>
       </div>
     </div>
@@ -374,6 +375,23 @@
       </div>
 
       <div class="field">
+        <label>Thuộc về</label>
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="strongTestament" value="hebrew" checked />
+            Cựu Ước (Hebrew - H)
+          </label>
+          <label>
+            <input type="radio" name="strongTestament" value="greek" />
+            Tân Ước (Greek - G)
+          </label>
+        </div>
+        <div class="note">
+          Giá trị này sẽ tự đổi theo sách ở Bước 1 (Cựu Ước / Tân Ước), nhưng bạn vẫn có thể chỉnh tay nếu cần.
+        </div>
+      </div>
+
+      <div class="field">
         <div class="checkbox-group">
           <label>
             <input type="checkbox" id="strongInNewTab" checked />
@@ -397,7 +415,7 @@
   </div>
 
   <script>
-    // Danh sách sách Tân Ước (dùng để xác định Greek / Hebrew)
+    // Danh sách sách Tân Ước (dùng để tự set radio Strong)
     const NEW_TESTAMENT_BOOKS = [
       "matthew","mark","luke","john","acts","romans",
       "1_corinthians","2_corinthians","galatians","ephesians",
@@ -405,6 +423,32 @@
       "1_timothy","2_timothy","titus","philemon","hebrews","james",
       "1_peter","2_peter","1_john","2_john","3_john","jude","revelation"
     ];
+
+    // Cập nhật radio Cựu/Tân Ước dựa trên sách đã chọn
+    function updateTestamentFromBook() {
+      const book = document.getElementById("bookSelect").value;
+      const hebrewRadio = document.querySelector('input[name="strongTestament"][value="hebrew"]');
+      const greekRadio = document.querySelector('input[name="strongTestament"][value="greek"]');
+
+      if (!book) {
+        // Không biết sách, giữ nguyên lựa chọn hiện tại (mặc định Cựu Ước là H)
+        return;
+      }
+
+      if (NEW_TESTAMENT_BOOKS.includes(book)) {
+        if (greekRadio) greekRadio.checked = true;
+      } else {
+        if (hebrewRadio) hebrewRadio.checked = true;
+      }
+    }
+
+    // Gắn event khi chọn sách
+    document.addEventListener("DOMContentLoaded", () => {
+      const bookSelect = document.getElementById("bookSelect");
+      if (bookSelect) {
+        bookSelect.addEventListener("change", updateTestamentFromBook);
+      }
+    });
 
     // BƯỚC 1: Tải câu Kinh Thánh vào khung BibleHub (tiếng Anh)
     function loadBiblehubVerse() {
@@ -429,17 +473,19 @@
       let url = "";
 
       if (viewType === "interlinear") {
-        // Ví dụ: https://biblehub.com/interlinear/isaiah/40-31.htm
         url = `https://biblehub.com/interlinear/${book}/${chapter}-${verse}.htm`;
       } else {
-        // Ví dụ: https://biblehub.com/isaiah/40-31.htm
         url = `https://biblehub.com/${book}/${chapter}-${verse}.htm`;
       }
 
+      const wrapper = document.getElementById("biblehubFrameWrapper");
       const frame = document.getElementById("frameBiblehub");
+      if (wrapper) {
+        wrapper.style.display = "block"; // hiện khung khi bấm nút
+      }
       frame.src = url;
 
-      frame.scrollIntoView({ behavior: "smooth", block: "start" });
+      wrapper.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     // BƯỚC 1: Mở bản dịch tiếng Việt của câu trong tab mới (Google Dịch)
@@ -502,16 +548,11 @@
         return;
       }
 
-      const book = document.getElementById("bookSelect").value;
-      if (!book) {
-        alert("Vui lòng chọn sách ở Bước 1 để xác định Cựu Ước hay Tân Ước.");
-        return;
-      }
-
-      // Xác định Hebrew hay Greek dựa trên sách
-      let testament = "hebrew"; // mặc định Cựu Ước
-      if (NEW_TESTAMENT_BOOKS.includes(book)) {
-        testament = "greek";
+      // Lấy lựa chọn Cựu/Tân Ước từ radio (mặc định Cựu Ước)
+      const testamentRadio = document.querySelector('input[name="strongTestament"]:checked');
+      let testament = "hebrew";
+      if (testamentRadio && (testamentRadio.value === "hebrew" || testamentRadio.value === "greek")) {
+        testament = testamentRadio.value;
       }
 
       const baseUrl = `https://biblehub.com/${testament}/${number}.htm`;
