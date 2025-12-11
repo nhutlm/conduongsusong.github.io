@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trợ lý tra cứu BibleHub (phiên bản smartphone)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 720px;
+      margin: 16px auto;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 22px;
+      margin-top: 0;
+      text-align: center;
+    }
+    h2 {
+      font-size: 18px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    p {
+      line-height: 1.5;
+      font-size: 15px;
+    }
+    .field {
+      margin-bottom: 10px;
+    }
+    .field label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      box-sizing: border-box;
+    }
+    .inline {
+      display: flex;
+      gap: 10px;
+    }
+    .inline .field {
+      flex: 1;
+    }
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      font-size: 14px;
+    }
+    .radio-group label, .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    button.primary {
+      margin-top: 8px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: #ffffff;
+      transition: background 0.15s, transform 0.05s;
+    }
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+    button.primary:active {
+      transform: scale(0.98);
+    }
+    button.secondary {
+      margin-top: 6px;
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: 1px solid #9ca3af;
+      background: #f9fafb;
+      cursor: pointer;
+    }
+    button.secondary:hover {
+      background: #e5e7eb;
+    }
+    .note {
+      font-size: 13px;
+      color: #4b5563;
+      margin-top: 4px;
+    }
+    .example {
+      font-size: 13px;
+      color: #6b7280;
+      font-style: italic;
+    }
+    .frame-wrapper {
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #d1d5db;
+    }
+    #frameBiblehub, #frameStrong {
+      width: 100%;
+      height: 60vh;
+      border: none;
+    }
+    #strongFrameWrapper {
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #d1d5db;
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 8px;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      button.primary {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Trợ lý tra cứu BibleHub</h1>
+    <p>
+      <strong>Bước 1:</strong> Chọn câu Kinh Thánh để xem trên BibleHub (Interlinear hoặc bản tiếng Anh).<br/>
+      <strong>Bước 2:</strong> Nhìn mã Strong trong khung, copy mã đó rồi bấm nút <em>“Dán mã Strong”</em> để điền xuống ô bên dưới, sau đó xem nghĩa + bản dịch tiếng Việt.
+    </p>
+
+    <!-- BƯỚC 1: CHỌN CÂU KINH THÁNH -->
+    <h2>Bước 1: Chọn câu Kinh Thánh</h2>
+
+    <div class="field">
+      <label for="bookSelect">Sách</label>
+      <select id="bookSelect">
+        <option value="">-- Chọn sách --</option>
+        <optgroup label="Cựu Ước">
+          <option value="genesis">Sáng Thế Ký</option>
+          <option value="exodus">Xuất Ê-díp-tô Ký</option>
+          <option value="leviticus">Lê-vi Ký</option>
+          <option value="numbers">Dân Số Ký</option>
+          <option value="deuteronomy">Phục Truyền Luật Lệ Ký</option>
+          <option value="joshua">Giô-suê</option>
+          <option value="judges">Các Quan Xét</option>
+          <option value="ruth">Ru-tơ</option>
+          <option value="1_samuel">I Sa-mu-ên</option>
+          <option value="2_samuel">II Sa-mu-ên</option>
+          <option value="1_kings">I Các Vua</option>
+          <option value="2_kings">II Các Vua</option>
+          <option value="1_chronicles">I Sử Ký</option>
+          <option value="2_chronicles">II Sử Ký</option>
+          <option value="ezra">Ê-xơ-ra</option>
+          <option value="nehemiah">Nê-hê-mi</option>
+          <option value="esther">Ê-xơ-tê</option>
+          <option value="job">Gióp</option>
+          <option value="psalms">Thi Thiên</option>
+          <option value="proverbs">Châm Ngôn</option>
+          <option value="ecclesiastes">Truyền Đạo</option>
+          <option value="song_of_solomon">Nhã Ca</option>
+          <option value="isaiah">Ê-sai</option>
+          <option value="jeremiah">Giê-rê-mi</option>
+          <option value="lamentations">Ca Thương</option>
+          <option value="ezekiel">Ê-xê-chi-ên</option>
+          <option value="daniel">Đa-ni-ên</option>
+          <option value="hosea">Ô-sê</option>
+          <option value="joel">Giô-ên</option>
+          <option value="amos">A-mốt</option>
+          <option value="obadiah">Áp-đia</option>
+          <option value="jonah">Giô-na</option>
+          <option value="micah">Mi-chê</option>
+          <option value="nahum">Na-hum</option>
+          <option value="habakkuk">Ha-ba-cúc</option>
+          <option value="zephaniah">Sô-phô-ni</option>
+          <option value="haggai">A-ghê</option>
+          <option value="zechariah">Xa-cha-ri</option>
+          <option value="malachi">Ma-la-chi</option>
+        </optgroup>
+        <optgroup label="Tân Ước">
+          <option value="matthew">Ma-thi-ơ</option>
+          <option value="mark">Mác</option>
+          <option value="luke">Lu-ca</option>
+          <option value="john">Giăng</option>
+          <option value="acts">Công Vụ Các Sứ Đồ</option>
+          <option value="romans">Rô-ma</option>
+          <option value="1_corinthians">I Cô-rinh-tô</option>
+          <option value="2_corinthians">II Cô-rinh-tô</option>
+          <option value="galatians">Ga-la-ti</option>
+          <option value="ephesians">Ê-phê-sô</option>
+          <option value="philippians">Phi-lip</option>
+          <option value="colossians">Cô-lô-se</option>
+          <option value="1_thessalonians">I Tê-sa-lô-ni-ca</option>
+          <option value="2_thessalonians">II Tê-sa-lô-ni-ca</option>
+          <option value="1_timothy">I Ti-mô-thê</option>
+          <option value="2_timothy">II Ti-mô-thê</option>
+          <option value="titus">Tít</option>
+          <option value="philemon">Phi-lê-môn</option>
+          <option value="hebrews">Hê-bơ-rơ</option>
+          <option value="james">Gia-cơ</option>
+          <option value="1_peter">I Phi-e-rơ</option>
+          <option value="2_peter">II Phi-e-rơ</option>
+          <option value="1_john">I Giăng</option>
+          <option value="2_john">II Giăng</option>
+          <option value="3_john">III Giăng</option>
+          <option value="jude">Giu-đe</option>
+          <option value="revelation">Khải Huyền</option>
+        </optgroup>
+      </select>
+      <div class="example">
+        Ví dụ: Ê-sai 40:31 → chọn “Ê-sai”, chương 40, câu 31.
+      </div>
+    </div>
+
+    <div class="inline">
+      <div class="field">
+        <label for="chapterInput">Chương</label>
+        <input id="chapterInput" type="number" min="1" />
+      </div>
+      <div class="field">
+        <label for="verseInput">Câu</label>
+        <input id="verseInput" type="number" min="1" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Cách xem trên BibleHub</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="viewType" value="interlinear" checked />
+          Interlinear (nguyên văn + Strong)
+        </label>
+        <label>
+          <input type="radio" name="viewType" value="text" />
+          Văn bản thường (bản tiếng Anh)
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="translateBiblehubFrame" />
+          Dịch khung câu Kinh Thánh sang tiếng Việt (Google Dịch)
+        </label>
+      </div>
+      <div class="note">
+        Nếu bật, BibleHub sẽ được hiển thị qua Google Dịch ngay trong khung phía dưới.
+      </div>
+    </div>
+
+    <button class="primary" onclick="loadBiblehubVerse()">Hiển thị câu này trong khung bên dưới</button>
+    <div class="note">
+      Sau khi hiện, bạn có thể dùng hai ngón tay để phóng to/thu nhỏ trên điện thoại.
+    </div>
+
+    <div class="frame-wrapper">
+      <iframe id="frameBiblehub" title="BibleHub viewer"></iframe>
+    </div>
+
+    <!-- BƯỚC 2: TRA MÃ STRONG -->
+    <h2>Bước 2: Tra mã Strong của câu đang xem</h2>
+    <p>
+      Trong khung phía trên, tìm mã Strong (ví dụ: <strong>H3068</strong>, <strong>G25</strong>, ...).<br/>
+      Nhấn giữ vào mã đó để <strong>Copy</strong>, sau đó bấm nút <em>“Dán mã Strong”</em> để tự điền vào ô bên dưới, rồi bấm <em>“Xem nghĩa + dịch tiếng Việt”</em>.
+    </p>
+
+    <div class="field">
+      <label for="strongInput">Mã Strong</label>
+      <input id="strongInput" type="text" placeholder="Ví dụ: H3068, G25 hoặc 3068" />
+      <button class="secondary" type="button" onclick="pasteStrongFromClipboard()">Dán mã Strong vừa copy</button>
+      <div class="example">
+        Trên điện thoại: nhấn giữ vào mã Strong trong khung trên → Copy → bấm nút “Dán mã Strong”.
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="strongInNewTab" checked />
+          Mở nghĩa Strong trong tab mới (khuyên dùng trên điện thoại)
+        </label>
+      </div>
+      <div class="note">
+        Nếu bỏ chọn, nghĩa Strong (đã dịch sang tiếng Việt) sẽ hiển thị trong khung bên dưới.
+      </div>
+    </div>
+
+    <button class="primary" onclick="openStrongMeaning()">Xem nghĩa + dịch tiếng Việt</button>
+    <div class="note">
+      Trang nghĩa Strong được lấy từ BibleHub, bọc qua Google Dịch sang tiếng Việt để dễ hiểu hơn.
+    </div>
+
+    <div id="strongFrameWrapper" style="display:none;">
+      <iframe id="frameStrong" title="Strong meaning viewer"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Danh sách sách Tân Ước (dùng để đoán Greek / Hebrew)
+    const NEW_TESTAMENT_BOOKS = [
+      "matthew","mark","luke","john","acts","romans",
+      "1_corinthians","2_corinthians","galatians","ephesians",
+      "philippians","colossians","1_thessalonians","2_thessalonians",
+      "1_timothy","2_timothy","titus","philemon","hebrews","james",
+      "1_peter","2_peter","1_john","2_john","3_john","jude","revelation"
+    ];
+
+    // BƯỚC 1: Tải câu Kinh Thánh vào khung BibleHub
+    function loadBiblehubVerse() {
+      const book = document.getElementById("bookSelect").value;
+      const chapter = document.getElementById("chapterInput").value.trim();
+      const verse = document.getElementById("verseInput").value.trim();
+
+      if (!book) {
+        alert("Vui lòng chọn sách.");
+        return;
+      }
+      if (!chapter || parseInt(chapter, 10) <= 0) {
+        alert("Vui lòng nhập chương (số > 0).");
+        return;
+      }
+      if (!verse || parseInt(verse, 10) <= 0) {
+        alert("Vui lòng nhập câu (số > 0).");
+        return;
+      }
+
+      const viewType = document.querySelector('input[name="viewType"]:checked').value;
+      let url = "";
+
+      if (viewType === "interlinear") {
+        // Ví dụ: https://biblehub.com/interlinear/isaiah/40-31.htm
+        url = `https://biblehub.com/interlinear/${book}/${chapter}-${verse}.htm`;
+      } else {
+        // Ví dụ: https://biblehub.com/isaiah/40-31.htm
+        url = `https://biblehub.com/${book}/${chapter}-${verse}.htm`;
+      }
+
+      const useTranslateFrame = document.getElementById("translateBiblehubFrame").checked;
+      if (useTranslateFrame) {
+        url =
+          "https://translate.google.com/translate?sl=en&tl=vi&u=" +
+          encodeURIComponent(url);
+      }
+
+      const frame = document.getElementById("frameBiblehub");
+      frame.src = url;
+
+      // Cuộn tới khung sau khi load (nhất là trên điện thoại)
+      frame.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // BƯỚC 2: Dán mã Strong từ clipboard vào ô nhập
+    async function pasteStrongFromClipboard() {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        alert("Trình duyệt không hỗ trợ dán từ clipboard. Vui lòng dán thủ công (nhấn giữ → Dán).");
+        return;
+      }
+      try {
+        const text = (await navigator.clipboard.readText()) || "";
+        if (!text.trim()) {
+          alert("Không thấy nội dung nào trong clipboard. Hãy copy lại mã Strong rồi thử lần nữa.");
+          return;
+        }
+        document.getElementById("strongInput").value = text.toUpperCase();
+      } catch (err) {
+        alert("Không đọc được clipboard. Có thể trình duyệt chặn quyền này. Bạn hãy dán thủ công vào ô.");
+      }
+    }
+
+    // BƯỚC 2: Mở nghĩa Strong (đã dịch sang tiếng Việt)
+    function openStrongMeaning() {
+      let strong = document.getElementById("strongInput").value.trim().toUpperCase();
+      if (!strong) {
+        alert("Vui lòng nhập hoặc dán mã Strong, ví dụ: H3068, G25 hoặc 3068.");
+        return;
+      }
+
+      // Lấy phần số (bỏ H/G nếu có)
+      const number = strong.replace(/[^\d]/g, "");
+      if (!number) {
+        alert("Không nhận diện được số Strong. Vui lòng kiểm tra lại.");
+        return;
+      }
+
+      const book = document.getElementById("bookSelect").value;
+      if (!book) {
+        alert("Vui lòng chọn sách ở Bước 1 để xác định Cựu Ước hay Tân Ước.");
+        return;
+      }
+
+      // Xác định Hebrew hay Greek dựa trên sách
+      let testament = "hebrew"; // mặc định Cựu Ước
+      if (NEW_TESTAMENT_BOOKS.includes(book)) {
+        testament = "greek";
+      }
+
+      let baseUrl = `https://biblehub.com/${testament}/${number}.htm`;
+
+      // Bọc qua Google Dịch sang tiếng Việt
+      const finalUrl =
+        "https://translate.google.com/translate?sl=en&tl=vi&u=" +
+        encodeURIComponent(baseUrl);
+
+      const openInNewTab = document.getElementById("strongInNewTab").checked;
+
+      if (openInNewTab) {
+        // Mở nghĩa Strong trong tab mới (hợp với smartphone)
+        window.open(finalUrl, "_blank");
+      } else {
+        // Hiển thị trong khung bên dưới
+        const wrapper = document.getElementById("strongFrameWrapper");
+        const frameStrong = document.getElementById("frameStrong");
+        wrapper.style.display = "block";
+        frameStrong.src = finalUrl;
+        wrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  </script>
+</body>
+</html>
