@@ -503,7 +503,7 @@
       let baseUrl = "";
 
       if (viewType === "interlinear") {
-        baseUrl = `https://biblehub.com/interlinear/${book}/${chapter}-${verse}.htm`;
+        baseUrl = `https://biblehub.com/text/${book}/${chapter}-${verse}.htm`;
       } else {
         baseUrl = `https://biblehub.com/${book}/${chapter}-${verse}.htm`;
       }
@@ -555,7 +555,7 @@
         testament = testamentRadio.value;
       }
 
-      const baseUrl = `https://biblehub.com/${testament}/${number}.htm`;
+      const baseUrl = `https://biblehub.com/text/${testament}/${number}.htm`;
 
       // URL đã bọc qua Google Dịch (dùng cho tab mới)
       const translatedUrl =
